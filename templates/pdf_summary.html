@@ -6,10 +6,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-green-100 to-green-200 min-h-screen flex items-center justify-center">
+<body class="bg-gradient-to-br from-gray-800 to-gray-900 min-h-screen flex items-center justify-center text-white">
     <div class="container mx-auto px-4 py-8 max-w-3xl">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 animate__animated animate__fadeIn">
-            <h1 class="text-4xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600">
+        
+        <a href="/" class="absolute top-6 left-6 flex items-center text-white-700 hover:text-white-900 transition-colors">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="ml-2 text-lg font-semibold">Home</span>
+        </a>
+
+        <div class="bg-gray-800 rounded-2xl shadow-2xl p-8 animate__animated animate__fadeIn">
+            <h1 class="text-4xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-yellow-400">
                 PDF Summary Generator
             </h1>
 
@@ -19,14 +27,14 @@
                     <svg class="mx-auto h-20 w-20 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    <p id="file-name" class="text-gray-600">Click to upload PDF</p>
+                    <p id="file-name" class="text-gray-400">Click to upload PDF</p>
                 </label>
             </div>
 
             <div id="summary-section" class="hidden">
-                <div class="bg-green-50 p-6 rounded-2xl mb-6">
-                    <h2 class="text-2xl font-semibold mb-4 text-green-700">Summary</h2>
-                    <p id="summary-text" class="text-gray-800"></p>
+                <div class="bg-gray-700 p-6 rounded-2xl mb-6">
+                    <h2 class="text-2xl font-semibold mb-4 text-green-400">Summary</h2>
+                    <p id="summary-text" class="text-gray-200"></p>
                 </div>
                 <div class="flex justify-center">
                     <button id="read-aloud-btn" class="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-colors flex items-center">
@@ -56,10 +64,10 @@
 
         function formatContent(content) {
             return content
-                .replace(/<strong>(.*?)<\/strong>/g, '<strong class="text-gray-900 font-bold">$1</strong>') // Bold for strong text
-                .replace(/<em>(.*?)<\/em>/g, '<em class="text-gray-700 italic">$1</em>')                // Italics for em text
-                .replace(/\n/g, '<br>')  // Newline for paragraphs
-                .replace(/<span class="italic text-gray-600">(.*?)<\/span>/g ,'<span class="text-sm italic text-gray-500">$1</span>') // Small gray italic text for context
+                .replace(/<strong>(.*?)<\/strong>/g, '<strong class="text-gray-100 font-bold">$1</strong>')
+                .replace(/<em>(.*?)<\/em>/g, '<em class="text-gray-300 italic">$1</em>')
+                .replace(/\n/g, '<br>')
+                .replace(/<span class="italic text-gray-600">(.*?)<\/span>/g ,'<span class="text-sm italic text-gray-400">$1</span>')
                 .replace(/([0-9]+\.) ([^\n]+)/g, '<li class="list-decimal ml-6">$2</li>')
                 .replace(/(\*)(.*?)(\*)/g, '<em>$2</em>');
         }
