@@ -6,41 +6,50 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-blue-100 to-blue-200 min-h-screen flex items-center justify-center">
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen flex items-center justify-center text-white">
+
     <div class="container mx-auto px-4 py-8 max-w-2xl">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 animate__animated animate__fadeIn">
-            <h1 class="text-4xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+
+        <a href="/" class="absolute top-6 left-6 flex items-center text-white hover:text-gray-400 transition-colors">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="ml-2 text-lg font-semibold">Home</span>
+        </a>
+
+        <div class="bg-gray-900 rounded-2xl shadow-2xl p-8 animate__animated animate__fadeIn">
+            <h1 class="text-4xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-600">
                 Chat Bot
             </h1>
             
             <div id="microphone-status" class="mb-6 text-center">
-                <div class="inline-block p-4 rounded-full bg-gray-100">
-                    <svg id="mic-icon" class="h-12 w-12 text-gray-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <div class="inline-block p-4 rounded-full bg-gray-700">
+                    <svg id="mic-icon" class="h-12 w-12 text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
                     </svg>
                 </div>
-                <p id="status-text" class="mt-2 text-gray-600">Click "Start Talking"</p>
+                <p id="status-text" class="mt-2 text-gray-400">Click "Start Talking"</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-gray-100 p-4 rounded-xl">
-                    <h3 class="font-semibold mb-2 text-blue-600">User</h3>
-                    <p id="transcription-text" class="text-gray-700">Waiting for speech input...</p>
+                <div class="bg-gray-800 p-4 rounded-xl">
+                    <h3 class="font-semibold mb-2 text-blue-500">User</h3>
+                    <p id="transcription-text" class="text-gray-300">Waiting for speech input...</p>
                 </div>
-                <div class="bg-gray-100 p-4 rounded-xl">
-                    <h3 class="font-semibold mb-2 text-green-600">Response</h3>
-                    <p id="ai-response-text" class="text-gray-700">Model's response here...</p>
+                <div class="bg-gray-800 p-4 rounded-xl">
+                    <h3 class="font-semibold mb-2 text-blue-500">Response</h3>
+                    <p id="ai-response-text" class="text-gray-300">Model's response here...</p>
                 </div>
             </div>
 
             <div class="flex justify-center space-x-4">
-                <button id="start-btn" class="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-colors flex items-center">
+                <button id="start-btn" class="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-colors flex items-center">
                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
                     </svg>
                     Start Talking
                 </button>
-                <button id="stop-btn" class="bg-red-500 text-white px-6 py-3 rounded-full hover:bg-red-600 transition-colors flex items-center" disabled>
+                <button id="stop-btn" class="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-colors flex items-center" disabled>
                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
