@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: asis-platform
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+        placeholder: "Enter your Groq API key"
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: FLASK_ENV
+        value: production

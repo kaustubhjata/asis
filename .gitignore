@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Local configuration
+.env
+
+# Flask uploads & downloads
+uploads/*
+!uploads/.gitkeep
+*.pdf
+asis final.docx
+kaus-asis.docx
+kullu-asis.docx
+raj-asis.docx
+
+# Large unused speech models
+vosk-model-en-in-0.5/

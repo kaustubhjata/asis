@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Summarizer - ASIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .loading-pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 min-h-screen flex flex-col justify-between text-slate-100 font-sans">
+
+    <!-- Decorative glow -->
+    <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <!-- Main Container -->
+    <main class="container mx-auto px-4 py-12 flex-grow flex flex-col justify-center items-center relative z-10 max-w-3xl">
+        
+        <!-- Back Navigation -->
+        <a href="/" class="self-start mb-8 flex items-center text-slate-400 hover:text-white transition-colors group">
+            <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="text-sm font-semibold">Back to Home</span>
+        </a>
+
+        <!-- Summarizer Container Card -->
+        <div class="glass-card rounded-2xl p-8 w-full shadow-2xl animate__animated animate__fadeIn">
+            
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-300">
+                    PDF Summarizer
+                </h1>
+                <p class="text-slate-400 text-sm font-light">Upload any PDF document to extract a concise, structured summary</p>
+            </header>
+
+            <!-- File Upload Drop Zone -->
+            <div id="upload-container" class="mb-8 p-8 border-2 border-dashed border-emerald-500/35 rounded-2xl text-center cursor-pointer hover:border-emerald-400 transition-colors group">
+                <input type="file" id="pdf-file" accept=".pdf" class="hidden" />
+                <label for="pdf-file" class="cursor-pointer block">
+                    <svg class="mx-auto h-16 w-16 text-emerald-500 mb-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <p id="file-name" class="text-slate-300 font-medium">Click or Drag & Drop PDF here</p>
+                    <p class="text-slate-500 text-xs mt-2">Maximum file size: 10MB</p>
+                </label>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loader" class="hidden text-center py-6">
+                <div class="inline-block w-8 h-8 border-4 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin mb-3"></div>
+                <p class="text-emerald-400 text-sm font-semibold tracking-wider loading-pulse">Extracting and summarizing PDF...</p>
+            </div>
+
+            <!-- Summary Results Section -->
+            <div id="summary-section" class="hidden bg-slate-900/60 border border-white/5 rounded-2xl p-6 mb-8 animate__animated animate__fadeIn">
+                <h2 class="text-xl font-bold mb-4 text-emerald-400 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Document Summary
+                </h2>
+                
+                <div id="summary-text" class="text-slate-300 text-sm font-light leading-relaxed mb-6 space-y-3 max-h-96 overflow-y-auto scrollbar-thin">
+                    <!-- Text gets inserted here -->
+                </div>
+
+                <!-- Speech playback controls -->
+                <div class="flex justify-center gap-4 border-t border-white/5 pt-4">
+                    <button id="read-aloud-btn" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition-all text-white px-6 py-2.5 rounded-full font-semibold flex items-center shadow-lg shadow-emerald-500/20">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                        </svg>
+                        Read Aloud
+                    </button>
+                    <button id="stop-speech-btn" class="bg-slate-800 hover:bg-slate-700 active:scale-95 transition-all text-slate-300 px-6 py-2.5 rounded-full font-semibold flex items-center border border-slate-700/50">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.828 10.172a4 4 0 000 5.656m0-5.656L10 6v12l-4.172-3.828H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.828z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+                        </svg>
+                        Stop Speech
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit action trigger -->
+            <div class="text-center mt-6">
+                <button id="generate-btn" class="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 disabled:pointer-events-none active:scale-95 transition-all text-white font-semibold px-8 py-3 rounded-full shadow-lg shadow-emerald-500/20">
+                    Generate Summary
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-6 text-center text-xs text-slate-500 bg-slate-950/40 relative z-10">
+        <p>© 2026 Advanced Speech Interaction Platform (ASIP)</p>
+    </footer>
+
+    <!-- Scripting for summarizing and browser TTS -->
+    <script>
+        const pdfFileInput = document.getElementById('pdf-file');
+        const fileNameDisplay = document.getElementById('file-name');
+        const generateBtn = document.getElementById('generate-btn');
+        const summarySection = document.getElementById('summary-section');
+        const summaryText = document.getElementById('summary-text');
+        const readAloudBtn = document.getElementById('read-aloud-btn');
+        const stopSpeechBtn = document.getElementById('stop-speech-btn');
+        const loader = document.getElementById('loader');
+        const uploadContainer = document.getElementById('upload-container');
+
+        // Drag and Drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, () => {
+                uploadContainer.classList.add('border-emerald-400', 'bg-emerald-500/5');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, () => {
+                uploadContainer.classList.remove('border-emerald-400', 'bg-emerald-500/5');
+            }, false);
+        });
+
+        uploadContainer.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                pdfFileInput.files = files;
+                updateFileNameDisplay(files[0]);
+            }
+        }
+
+        pdfFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) updateFileNameDisplay(file);
+        });
+
+        function updateFileNameDisplay(file) {
+            fileNameDisplay.innerHTML = `<span class="text-emerald-400 font-semibold">${file.name}</span> selected`;
+        }
+
+        // Generate Summary API Call
+        generateBtn.addEventListener('click', () => {
+            if (!pdfFileInput.files || pdfFileInput.files.length === 0) {
+                alert('Please upload a PDF first.');
+                return;
+            }
+
+            // Stop speech synthesis if playing
+            window.speechSynthesis.cancel();
+
+            // UI states
+            loader.classList.remove('hidden');
+            summarySection.classList.add('hidden');
+            generateBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('pdf_file', pdfFileInput.files[0]);
+
+            fetch('/pdf_summary', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loader.classList.add('hidden');
+                generateBtn.disabled = false;
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    summaryText.innerHTML = formatMarkdownContent(data.summary);
+                    summarySection.classList.remove('hidden');
+                    summarySection.scrollIntoView({ behavior: 'smooth' });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loader.classList.add('hidden');
+                generateBtn.disabled = false;
+                alert('A network error occurred while generating the summary.');
+            });
+        });
+
+        // Parse markdown headings, bullet points, bolding for HTML display
+        function formatMarkdownContent(content) {
+            let formatted = content
+                .replace(/\n\s*\n/g, '<br><br>') // Paragraphs
+                .replace(/\n/g, '<br>') // Line breaks
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-emerald-400 font-semibold">$1</strong>') // Bold
+                .replace(/\*(.*?)\*/g, '<em class="text-slate-200 italic">$1</em>') // Italics
+                .replace(/^\s*-\s*(.*?)(?=<br>|$)/gm, '<li class="list-disc ml-5 my-1 font-light text-slate-300">$1</li>') // Bullets
+                .replace(/^\s*\d+\.\s*(.*?)(?=<br>|$)/gm, '<li class="list-decimal ml-5 my-1 font-light text-slate-300">$1</li>'); // Numbered lists
+            
+            // Wrap sets of <li> elements into <ul> / <ol> blocks to avoid raw <li> tags
+            formatted = formatted.replace(/(<li class="list-disc.*?<\/li>)+/g, '<ul class="my-3 space-y-1">$1</ul>');
+            formatted = formatted.replace(/(<li class="list-decimal.*?<\/li>)+/g, '<ol class="my-3 space-y-1">$1</ol>');
+            return formatted;
+        }
+
+        // Browser Text-To-Speech
+        readAloudBtn.addEventListener('click', () => {
+            window.speechSynthesis.cancel(); // Stop current speech
+            
+            // Clean text of HTML tags
+            const cleanText = summaryText.textContent || summaryText.innerText;
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+
+            // Select an English voice
+            const voices = window.speechSynthesis.getVoices();
+            const englishVoice = voices.find(v => v.lang.startsWith('en-'));
+            if (englishVoice) {
+                utterance.voice = englishVoice;
+            }
+
+            utterance.onstart = () => {
+                readAloudBtn.classList.add('bg-teal-600');
+                readAloudBtn.innerHTML = `
+                    <svg class="w-5 h-5 mr-2 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                    </svg> Speaking...`;
+            };
+
+            utterance.onend = () => {
+                resetReadAloudButton();
+            };
+
+            utterance.onerror = () => {
+                resetReadAloudButton();
+            };
+
+            window.speechSynthesis.speak(utterance);
+        });
+
+        stopSpeechBtn.addEventListener('click', () => {
+            window.speechSynthesis.cancel();
+            resetReadAloudButton();
+        });
+
+        function resetReadAloudButton() {
+            readAloudBtn.classList.remove('bg-teal-600');
+            readAloudBtn.innerHTML = `
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                </svg> Read Aloud`;
+        }
+
+        // Initialize voices list on page load
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+    </script>
+</body>
+</html>
